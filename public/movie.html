@@ -63,9 +63,7 @@
         const id = params.get("id");
 
 
-        // ========================================
-        // OTTIENI FILM + RECENSIONI
-        // ========================================
+       
 
         fetch(`/movies/${id}`)
 
@@ -77,12 +75,12 @@
                 const reviews = data.reviews;
 
 
-                // Titolo
+                
                 document.getElementById("title").textContent =
                     movie.title;
 
 
-                // Informazioni del film
+                
                 document.getElementById("movie").innerHTML = `
 
                     <img
@@ -111,12 +109,12 @@
                 `;
 
 
-                // Container recensioni
+                
                 const reviewsContainer =
                     document.getElementById("reviews");
 
 
-                // Mostra recensioni
+                
                 reviews.forEach(review => {
 
                     reviewsContainer.innerHTML += `
@@ -156,9 +154,7 @@
             });
 
 
-        // ========================================
-        // POST - AGGIUNGI RECENSIONE
-        // ========================================
+        
 
         document
             .getElementById("reviewForm")
@@ -227,9 +223,7 @@
             });
 
 
-        // ========================================
-        // PUT - MODIFICA RECENSIONE
-        // ========================================
+        
 
         function editReview(reviewId) {
 
@@ -257,7 +251,7 @@
             }
 
 
-            // Controllo dati
+            
             if (
                 !name.trim() ||
                 !text.trim() ||
@@ -274,7 +268,7 @@
             }
 
 
-            // Invio PUT
+            
             fetch(`/reviews/${reviewId}`, {
 
                 method: "PUT",
@@ -326,9 +320,6 @@
         }
 
 
-        // ========================================
-        // DELETE - ELIMINA RECENSIONE
-        // ========================================
 
         function deleteReview(reviewId) {
 
