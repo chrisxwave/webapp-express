@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>I miei film</h1>
+
+    <div id="movies"></div>
+
+    <script>
+        fetch("/movies")
+            .then(response => response.json())
+            .then(movies => {
+                const container = document.getElementById("movies");
+
+                movies.forEach(movie => {
+                    container.innerHTML += `
+                        <div class="movie-card" onclick="window.location.href='/movie.html?id=${movie.id}'">
+                            <img src="/images/${movie.image}" width="200">
+                            <h2>${movie.title}</h2>
+                            <p>Regista: ${movie.director}</p>
+                            <p>Genere: ${movie.genre}</p>
+                            <p>Anno: ${movie.release_year}</p>
+                        </div>
+                    `;
+                });
+            });
+    </script>
+
+</body>
+</html>

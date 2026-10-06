@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dettaglio film</title>
+
+    <link rel="stylesheet" href="movies.css">
+</head>
+
+<body>
+
+    <a href="/">← Torna ai film</a>
+
+    <h1 id="title"></h1>
+
+    <div id="movie"></div>
+
+    <h2>Recensioni</h2>
+
+    <div id="reviews"></div>
+
+    <h2>Aggiungi una recensione</h2>
+
+    <form id="reviewForm">
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Il tuo nome"
+            required
+        >
+
+        <input
+            type="number"
+            id="vote"
+            min="1"
+            max="5"
+            placeholder="Voto 1-5"
+            required
+        >
+
+        <textarea
+            id="text"
+            placeholder="Scrivi la tua recensione"
+            required
+        ></textarea>
+
+        <button type="submit">
+            Invia recensione
+        </button>
+
+    </form>
+
+
+    <script>
+
+        // ID del film preso dall'URL
+        const params = new URLSearchParams(window.location.search);
+
+        const id = params.get("id");
+
+
+        // ========================================
+        // OTTIENI FILM + RECENSIONI
+        // ========================================
+
+        fetch(`/movies/${id}`)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                const movie = data.movie;
+                const reviews = data.reviews;
+
+
+                // Titolo
+                document.getElementById("title").textContent =
+                    movie.title;
+
+
+                // Informazioni del film
+                document.getElementById("movie").innerHTML = `
+
+                    <img
+                        src="/images/${movie.image}"
+                        width="280"
+                    >
+
+                    <h2>${movie.title}</h2>
+
+                    <p>
+                        Regista: ${movie.director}
+                    </p>
+
+                    <p>
+                        Genere: ${movie.genre}
+                    </p>
+
+                    <p>
+                        Anno: ${movie.release_year}
+                    </p>
+
+                    <p>
+                        ${movie.abstract}
+                    </p>
+
+                `;
+
+
+                // Container recensioni
+                const reviewsContainer =
+                    document.getElementById("reviews");
+
+
+                // Mostra recensioni
+                reviews.forEach(review => {
+
+                    reviewsContainer.innerHTML += `
+
+                        <div class="review">
+
+                            <h3>
+                                ${review.name}
+                            </h3>
+
+                            <p>
+                                Voto: ${review.vote}/5
+                            </p>
+
+                            <p>
+                                ${review.text}
+                            </p>
+
+                            <button
+                                onclick="editReview(${review.id})"
+                            >
+                                Modifica
+                            </button>
+
+                            <button
+                                onclick="deleteReview(${review.id})"
+                            >
+                                Elimina
+                            </button>
+
+                        </div>
+
+                    `;
+
+                });
+
+            });
+
+
+        // ========================================
+        // POST - AGGIUNGI RECENSIONE
+        // ========================================
+
+        document
+            .getElementById("reviewForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById("name").value;
+
+                const vote =
+                    document.getElementById("vote").value;
+
+                const text =
+                    document.getElementById("text").value;
+
+
+                fetch("/reviews", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        movie_id: id,
+                        name: name,
+                        vote: vote,
+                        text: text
+
+                    })
+
+                })
+
+                .then(response => {
+
+                    if (!response.ok) {
+                        throw new Error("Errore nell'aggiunta");
+                    }
+
+                    return response.json();
+
+                })
+
+                .then(data => {
+
+                    console.log(data);
+
+                    alert("Recensione aggiunta!");
+
+                    location.reload();
+
+                })
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    alert("Errore nell'aggiunta della recensione.");
+
+                });
+
+            });
+
+
+        // ========================================
+        // PUT - MODIFICA RECENSIONE
+        // ========================================
+
+        function editReview(reviewId) {
+
+            const name =
+                prompt("Nuovo nome:");
+
+            if (name === null) {
+                return;
+            }
+
+
+            const vote =
+                prompt("Nuovo voto da 1 a 5:");
+
+            if (vote === null) {
+                return;
+            }
+
+
+            const text =
+                prompt("Nuova recensione:");
+
+            if (text === null) {
+                return;
+            }
+
+
+            // Controllo dati
+            if (
+                !name.trim() ||
+                !text.trim() ||
+                !Number.isInteger(Number(vote)) ||
+                Number(vote) < 1 ||
+                Number(vote) > 5
+            ) {
+
+                alert(
+                    "Inserisci un nome, un voto da 1 a 5 e una recensione."
+                );
+
+                return;
+            }
+
+
+            // Invio PUT
+            fetch(`/reviews/${reviewId}`, {
+
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    name: name,
+                    vote: Number(vote),
+                    text: text
+
+                })
+
+            })
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Errore nella modifica");
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                console.log(data);
+
+                alert("Recensione modificata!");
+
+                location.reload();
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                alert(
+                    "Errore nella modifica della recensione."
+                );
+
+            });
+
+        }
+
+
+        // ========================================
+        // DELETE - ELIMINA RECENSIONE
+        // ========================================
+
+        function deleteReview(reviewId) {
+
+            const conferma =
+                confirm(
+                    "Vuoi davvero eliminare questa recensione?"
+                );
+
+
+            if (!conferma) {
+                return;
+            }
+
+
+            fetch(`/reviews/${reviewId}`, {
+
+                method: "DELETE"
+
+            })
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Errore nell'eliminazione");
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                console.log(data);
+
+                alert("Recensione eliminata!");
+
+                location.reload();
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                alert(
+                    "Errore nell'eliminazione della recensione."
+                );
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

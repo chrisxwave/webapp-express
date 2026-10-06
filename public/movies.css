@@ -1,0 +1,120 @@
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #111;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 38px;
+}
+
+#movie {
+    max-width: 900px;
+    margin: 0 auto 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+#movie img {
+    width: 280px;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 25px;
+}
+
+#movie h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#movie p {
+    font-size: 17px;
+    margin: 18px 0;
+}
+
+body > h2 {
+    max-width: 900px;
+    margin: 30px auto 20px auto;
+}
+
+#reviews {
+    max-width: 900px;
+    margin: 0 auto 40px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.review {
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.review:last-child {
+    border-bottom: none;
+}
+
+.review h3 {
+    margin-top: 0;
+    font-size: 21px;
+}
+
+.review p {
+    margin: 12px 0;
+}
+
+#reviewForm {
+    max-width: 900px;
+    margin: 0 auto 50px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+#reviewForm input,
+#reviewForm textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+#reviewForm textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+#reviewForm button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #222;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#reviewForm button:hover {
+    background-color: #444;
+}
