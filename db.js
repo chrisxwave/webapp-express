@@ -1,3 +1,9 @@
+
+
+console.log("DB_HOST:", process.env.DB_HOST);
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_PASSWORD presente:", Boolean(process.env.DB_PASSWORD));
+
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
@@ -10,7 +16,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error("Errore connessione database:", err);
+        console.error("Errore connessione database:", err.message);
         return;
     }
 

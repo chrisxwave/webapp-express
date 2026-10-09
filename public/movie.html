@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="it">
 
@@ -14,16 +15,20 @@
 
     <a href="/">← Torna ai film</a>
 
+    <!-- 1. Titolo del film -->
     <h1 id="title"></h1>
 
+    <!-- 2. Contenitore dei dettagli del film -->
     <div id="movie"></div>
 
     <h2>Recensioni</h2>
 
+    <!-- 3. Contenitore di tutte le recensioni -->
     <div id="reviews"></div>
 
     <h2>Aggiungi una recensione</h2>
 
+    <!-- 4. Form per inserire una nuova recensione -->
     <form id="reviewForm">
 
         <input
@@ -54,33 +59,32 @@
 
     </form>
 
-
     <script>
 
-        // ID del film preso dall'URL
+        // 5. Recupero l'id del film dall'URL
         const params = new URLSearchParams(window.location.search);
-
         const id = params.get("id");
 
 
-       
-
+        // GET: recupero il film e le sue recensioni dal server
         fetch(`/movies/${id}`)
 
+            // Converto la risposta del server in JSON
             .then(response => response.json())
 
             .then(data => {
 
+                // Separo i dati del film dalle recensioni
                 const movie = data.movie;
                 const reviews = data.reviews;
 
 
-                
+                // Inserisco il titolo nella pagina
                 document.getElementById("title").textContent =
                     movie.title;
 
 
-                
+                // 6. Mostro i dettagli del film usando i dati ricevuti
                 document.getElementById("movie").innerHTML = `
 
                     <img
@@ -109,14 +113,15 @@
                 `;
 
 
-                
+                // Prendo il contenitore delle recensioni
                 const reviewsContainer =
                     document.getElementById("reviews");
 
 
-                
+                // 7. forEach legge ogni recensione una alla volta
                 reviews.forEach(review => {
 
+                    // Aggiungo la recensione alla pagina
                     reviewsContainer.innerHTML += `
 
                         <div class="review">
@@ -133,6 +138,7 @@
                                 ${review.text}
                             </p>
 
+                            <!-- Passo l'id alla funzione per modificare o eliminare -->
                             <button
                                 onclick="editReview(${review.id})"
                             >
@@ -154,15 +160,16 @@
             });
 
 
-        
-
+        // POST: aggiungo una nuova recensione
         document
             .getElementById("reviewForm")
             .addEventListener("submit", function(event) {
 
+                // Impedisco al form di ricaricare automaticamente la pagina
                 event.preventDefault();
 
 
+                // Recupero i valori inseriti nei campi
                 const name =
                     document.getElementById("name").value;
 
@@ -173,14 +180,17 @@
                     document.getElementById("text").value;
 
 
+                // 8. Invio i dati della nuova recensione al server
                 fetch("/reviews", {
 
                     method: "POST",
 
+                    // Indico che sto inviando dati in formato JSON
                     headers: {
                         "Content-Type": "application/json"
                     },
 
+                    // Trasformo i dati in una stringa JSON
                     body: JSON.stringify({
 
                         movie_id: id,
@@ -194,6 +204,7 @@
 
                 .then(response => {
 
+                    // Controllo se il server ha risposto correttamente
                     if (!response.ok) {
                         throw new Error("Errore nell'aggiunta");
                     }
@@ -208,12 +219,14 @@
 
                     alert("Recensione aggiunta!");
 
+                    // Ricarico la pagina per vedere la nuova recensione
                     location.reload();
 
                 })
 
                 .catch(error => {
 
+                    // Mostro eventuali errori nella console
                     console.error(error);
 
                     alert("Errore nell'aggiunta della recensione.");
@@ -223,35 +236,30 @@
             });
 
 
-        
-
+        // PUT: modifico una recensione esistente
         function editReview(reviewId) {
 
-            const name =
-                prompt("Nuovo nome:");
+            // Chiedo all'utente i nuovi dati
+            const name = prompt("Nuovo nome:");
 
             if (name === null) {
                 return;
             }
 
-
-            const vote =
-                prompt("Nuovo voto da 1 a 5:");
+            const vote = prompt("Nuovo voto da 1 a 5:");
 
             if (vote === null) {
                 return;
             }
 
-
-            const text =
-                prompt("Nuova recensione:");
+            const text = prompt("Nuova recensione:");
 
             if (text === null) {
                 return;
             }
 
 
-            
+            // 9. Controllo che i dati inseriti siano validi
             if (
                 !name.trim() ||
                 !text.trim() ||
@@ -268,7 +276,7 @@
             }
 
 
-            
+            // Invio al server i nuovi dati della recensione
             fetch(`/reviews/${reviewId}`, {
 
                 method: "PUT",
@@ -303,6 +311,7 @@
 
                 alert("Recensione modificata!");
 
+                // Aggiorno la pagina per mostrare le modifiche
                 location.reload();
 
             })
@@ -311,29 +320,28 @@
 
                 console.error(error);
 
-                alert(
-                    "Errore nella modifica della recensione."
-                );
+                alert("Errore nella modifica della recensione.");
 
             });
 
         }
 
 
-
+        // DELETE: elimino una recensione
         function deleteReview(reviewId) {
 
-            const conferma =
-                confirm(
-                    "Vuoi davvero eliminare questa recensione?"
-                );
+            // Chiedo conferma prima di eliminare
+            const conferma = confirm(
+                "Vuoi davvero eliminare questa recensione?"
+            );
 
-
+            // Se l'utente annulla, interrompo la funzione
             if (!conferma) {
                 return;
             }
 
 
+            // 10. Invio la richiesta DELETE per eliminare la recensione
             fetch(`/reviews/${reviewId}`, {
 
                 method: "DELETE"
@@ -356,6 +364,7 @@
 
                 alert("Recensione eliminata!");
 
+                // Ricarico la pagina senza la recensione eliminata
                 location.reload();
 
             })
@@ -364,9 +373,7 @@
 
                 console.error(error);
 
-                alert(
-                    "Errore nell'eliminazione della recensione."
-                );
+                alert("Errore nell'eliminazione della recensione.");
 
             });
 
